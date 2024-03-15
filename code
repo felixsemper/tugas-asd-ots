@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LENGTH 2024
+#define MIN_LENGTH 1945
+
+void lessThanRequired(int* lengthOfText){ //untuk menangani kasus di mana panjang teks yang dibaca kurang dari panjang minimum yang diharuskan
+    printf("The length of your text is less than specified, please update your text\n");
+    printf("Length Before : %d\n", *lengthOfText);
+    *lengthOfText = MIN_LENGTH +  (2023 - MIN_LENGTH ); // MIN_LENGTH ditambahkan dengan selisih antara nilai konstan 2023 dan MIN_LENGTH
+}
+
+void equalThanRequired(int* lengthOfText){ // untuk menangani kasus di mana panjang teks yang dibaca sama dengan panjang minimum yang diharuskan
+    printf("Thank you, Your text length is correct\n");
+}
+
+void moreThanRequired(int* lengthOfText){ //untuk menangani kasus di mana panjang teks yang dibaca lebih dari panjang maksimum yang diizinkan
+    printf("Your text is too long, please reduce the text\n");
+    printf("Length Before : %d\n", *lengthOfText);
+    *lengthOfText = MIN_LENGTH + (*lengthOfText-MIN_LENGTH); //menghitung selisih panjang teks dan panjang minimum kemudian ditambahkan dengan MIN_LENGTH
+}
+
+int checkLenghtRequirement(char* text){ // mengecek panjang teks apakah memenuhi syarat
+    int length = strlen(text);
+    return (length < MIN_LENGTH) ? 0 : (length == MIN_LENGTH) ? 1 : 2; //untuk menentukan status panjang teks yang diberikan
+}
+
+int main() {
+    int lengthOfText = 0, selectOption; // Variabel lengthOfText akan digunakan untuk menyimpan panjang teks yang dibaca, selectOption akan digunakan untuk menyimpan hasil dari pengecekan panjang teks
+    FILE *fptr = NULL; //Pointer ke FILE dengan nama fptr dideklarasikan dan diinisialisasi dengan nilai NULL
+    char text[MAX_LENGTH];
+
+    fptr = fopen("file.txt", "r"); // File "file.txt" dibuka dalam mode baca ("r") menggunakan fungsi fopen()
+
+
+    fgets(text, MAX_LENGTH, fptr); // dibaca menggunakan fungsi fgets() dan disimpan dalam array text dengan panjang maksimum yang ditentukan oleh MAX_LENGTH
+
+    // Calculate length before modification
+    lengthOfText = strlen(text);
+
+    fclose(fptr);
+
+    selectOption = checkLenghtRequirement(text);
+
+    (selectOption == 0) ? lessThanRequired(&lengthOfText) :
+    (selectOption == 1) ? equalThanRequired(&lengthOfText) :
+    moreThanRequired(&lengthOfText);
+
+    printf("\nThe Lenght is updated to %d", lengthOfText);
+
+    return 0;
+} 
